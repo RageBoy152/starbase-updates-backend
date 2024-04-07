@@ -6,7 +6,7 @@ const Update = require('./models/update')
 const Contributors = require('./models/contributor')
 const io = require('socket.io')(3002, {
     cors: {
-        origin: ['http://localhost:8080']
+        origin: ['http://localhost:8080','https://starbase-updates-frontend.onrender.com',undefined]
     }
 })
 
@@ -14,7 +14,7 @@ const io = require('socket.io')(3002, {
 const app = express()
 
 //  CORS SETUP
-const whitelist = ['http://localhost:8080','https://rageboy152.github.io','http://127.0.0.1:8080', undefined, 'http://192.168.0.215:8080'];
+const whitelist = ['http://localhost:8080','https://starbase-updates-frontend.onrender.com', undefined];
 
 const corsOptions = {
     origin: function (origin, callback) {
@@ -35,7 +35,7 @@ const dbURI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PWD}@st
 mongoose.connect(dbURI)
     .then((res)=>{
         app.listen(3001,()=>{
-            console.log('Server listening at https://localhost:3001')
+            console.log('Server listening at https://https://starbase-updates-backend.onrender.com:3001')
         })
     })
     .catch((err)=>{console.log(err)})
