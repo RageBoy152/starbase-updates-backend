@@ -35,7 +35,7 @@ const dbURI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PWD}@st
 mongoose.connect(dbURI)
     .then((res)=>{
         app.listen(3001,()=>{
-            console.log('Server listening at https://https://starbase-updates-backend.onrender.com:3001')
+            console.log('Server listening at https://starbase-updates-backend.onrender.com')
         })
     })
     .catch((err)=>{console.log(err)})
@@ -146,4 +146,9 @@ app.get('/check-dc-user',async(req,res)=>{
     }).catch((err)=>{
         console.log(err)
     })
+})
+
+
+app.get('/test',(req,res)=>{
+    res.send("testing 123")
 })
