@@ -150,5 +150,8 @@ app.get('/check-dc-user',async(req,res)=>{
 
 
 app.get('/test',(req,res)=>{
+    res.setHeader("Access-Control-Allow-Origin","*")
+    res.setHeader("Access-Control-Allow-Credentials","true")
+    
     res.send("testing 123")
 })
