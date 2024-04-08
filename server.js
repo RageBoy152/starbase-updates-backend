@@ -37,11 +37,15 @@ app.use(cors({
 const dbURI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PWD}@starbase-updates.ic9vjva.mongodb.net/starbase-updates-db?retryWrites=true&w=majority&appName=starbase-updates`
 mongoose.connect(dbURI)
     .then((res)=>{
+        console.log("CONNECTED TO DB")
         app.listen(3001,()=>{
             console.log('Server listening at https://starbase-updates-backend.onrender.com')
         })
     })
-    .catch((err)=>{console.log(err)})
+    .catch((err)=>{
+        console.log("ERROR CONNECTING TO DB")
+        console.log(err)
+    })
 
 
 
