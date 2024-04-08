@@ -25,10 +25,9 @@ const corsOptions = {
         }
     }
 }
-// app.use(cors(corsOptions))
-app.use(cors({
-    origin: '*'
-  }))
+app.use(cors(corsOptions))
+
+// app.use(cors({origin:'*'}))
 
 
 
@@ -54,10 +53,6 @@ mongoose.connect(dbURI)
 
 io.on('connection',(socket)=>{
     console.log(socket.id)
-    // socket.on('new-update',(updateJson)=>{
-    //     console.log(updateJson)
-    //     addUpdate(updateJson)
-    // })
 })
 
 function emitNewUpdate(update,editedUpdateId) {
@@ -98,6 +93,8 @@ app.get('/add-update',async(req,res)=>{
         // finding existing doc by id and replacing
         Update.findOneAndReplace({ _id: updateId }, replacement, {new:true}).then((result)=>{
             // all good, emit to connected sockets to update their feeds, send ok message to updatee client
+            console.log("NEW EDIT PING:")
+            console.log(result,updateId)
             emitNewUpdate(result,updateId)
             res.send(result)
         }).catch((err)=>{
