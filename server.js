@@ -147,7 +147,8 @@ app.get('/check-dc-user',async(req,res)=>{
     userId = req.query.userId
 
     Contributors.findOne({dc_id: userId}).then((result)=>{
-        res.send(result)
+        if (result=='null' || !result || result == null) {res.send({"dc_id":0})}
+        else {res.send(result)}
     }).catch((err)=>{
         console.log(err)
     })
