@@ -146,12 +146,20 @@ app.get('/get-updates',async(req,res)=>{
 app.get('/check-dc-user',async(req,res)=>{
     userId = req.query.userId
 
-    Contributors.findOne({dc_id: userId}).then((result)=>{
-        if (result=='null' || !result || result == null) {res.send({"dc_id":0})}
-        else {res.send(result)}
-    }).catch((err)=>{
-        console.log(err)
-    })
+    // Contributors.findOne({dc_id: userId}).then((result)=>{
+    //     console.log(result)
+    //     if (!result) {res.send({"dc_id":0})}
+    //     else {res.send(result)}
+    // }).catch((err)=>{
+    //     console.log(err)
+    // })
+
+    uploaders = ["693191740961718420", "523327414026371082"]
+    if (uploaders.indexOf(userId) !== -1) {
+        res.send({"dc_id":userId})
+    }   else {
+        res.send({"dc_id":0})
+    }
 })
 
 
