@@ -4,14 +4,20 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const Update = require('./models/update')
 const Contributors = require('./models/contributor')
-const io = require('socket.io')(3002, {
-    cors: {
-        origin: ['http://localhost:8080','https://starbase-updates-frontend.onrender.com',undefined]
-    }
-})
+
+const { createServer } = require("http")
+const { Server } = require("socket.io")
 
 
 const app = express()
+const httpServer = createServer(app)
+
+const io = new Server(httpServer, { cors: {
+    origin: ['http://localhost:8080','https://starbase-updates-frontend.onrender.com',undefined]
+} })
+
+
+
 
 //  CORS SETUP
 const whitelist = ['http://localhost:8080','https://starbase-updates-frontend.onrender.com', undefined];
@@ -156,3 +162,7 @@ app.get('/test',(req,res)=>{
 
     res.send("testing 123")
 })
+
+
+
+httpServer.listen(3000)
