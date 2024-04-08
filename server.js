@@ -64,7 +64,6 @@ function emitNewUpdate(update,editedUpdateId) {
 
 app.get('/add-update',async(req,res)=>{
     userId = req.query.userId
-    console.log(userId)
     timestamp = req.query.timestamp
     location = req.query.location
     vehicle = req.query.vehicle
@@ -89,12 +88,10 @@ app.get('/add-update',async(req,res)=>{
 
     
 
-    if (updateId) {
+    if (updateId != 'undefined') {
         // finding existing doc by id and replacing
         Update.findOneAndReplace({ _id: updateId }, replacement, {new:true}).then((result)=>{
             // all good, emit to connected sockets to update their feeds, send ok message to updatee client
-            console.log("NEW EDIT PING:")
-            console.log(result,updateId)
             emitNewUpdate(result,updateId)
             res.send(result)
         }).catch((err)=>{
