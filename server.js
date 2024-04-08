@@ -43,9 +43,7 @@ const dbURI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PWD}@st
 mongoose.connect(dbURI)
     .then((res)=>{
         console.log("CONNECTED TO DB")
-        app.listen(3001,()=>{
-            console.log('Server listening at https://starbase-updates-backend.onrender.com')
-        })
+        httpServer.listen(3000)
     })
     .catch((err)=>{
         console.log("ERROR CONNECTING TO DB")
@@ -162,7 +160,3 @@ app.get('/test',(req,res)=>{
 
     res.send("testing 123")
 })
-
-
-
-httpServer.listen(3000)
