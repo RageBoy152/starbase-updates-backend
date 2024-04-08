@@ -76,6 +76,8 @@ app.get('/add-update',async(req,res)=>{
     userName = req.query.userName
     updateId = req.query.updateId
 
+    // console.log(userId)
+
     console.log(timestamp,location,vehicle,message,updateId)
 
 
