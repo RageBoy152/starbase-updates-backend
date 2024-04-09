@@ -158,7 +158,7 @@ app.get('/check-dc-user',async(req,res)=>{
     //     console.log(err)
     // })
 
-    uploaders = ["693191740961718420", "523327414026371082"]
+    uploaders = ["693191740961718420", "523327414026371082", "310599109310676994"]
     if (uploaders.indexOf(userId) !== -1) {
         res.send({"dc_id":userId})
     }   else {
