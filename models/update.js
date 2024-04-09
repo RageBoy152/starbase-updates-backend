@@ -14,6 +14,10 @@ const updateSchema = new Schema({
         type: String,
         required: true
     },
+    pinned: {
+        type: Boolean,
+        required: true
+    },
     body: {
         type: String,
         required: true

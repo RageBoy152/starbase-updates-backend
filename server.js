@@ -75,6 +75,7 @@ app.get('/add-update',async(req,res)=>{
     userAvatar = req.query.userAvatar
     userName = req.query.userName
     updateId = req.query.updateId
+    pinned = req.query.pinned
 
     // console.log(userId)
 
@@ -88,7 +89,8 @@ app.get('/add-update',async(req,res)=>{
         body: message,
         userTimestamp: timestamp,
         vehicle: vehicle,
-        location: location
+        location: location,
+        pinned: pinned
     }
     const update = new Update(replacement)
 
@@ -156,7 +158,7 @@ app.get('/check-dc-user',async(req,res)=>{
     //     console.log(err)
     // })
 
-    uploaders = ["693191740961718420", "523327414026371082", "310599109310676994"]
+    uploaders = ["693191740961718420", "523327414026371082"]
     if (uploaders.indexOf(userId) !== -1) {
         res.send({"dc_id":userId})
     }   else {
