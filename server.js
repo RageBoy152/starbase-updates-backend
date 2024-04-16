@@ -33,8 +33,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
-// app.use(cors({origin:'*'}))
-
 
 
 
@@ -59,8 +57,8 @@ io.on('connection',(socket)=>{
     console.log(socket.id)
 })
 
-function emitNewUpdate(update,editedUpdateId) {
-    io.emit('refresh-feed',update,editedUpdateId)
+function emitNewUpdate(update,editedUpdateId,pinnedChangeTxt) {
+    io.emit('refresh-feed',update,editedUpdateId,pinnedChangeTxt)
 }
 
 
@@ -75,11 +73,30 @@ app.get('/add-update',async(req,res)=>{
     userAvatar = req.query.userAvatar
     userName = req.query.userName
     updateId = req.query.updateId
-    pinned = req.query.pinned
+    pinStatus = (req.query.pinStatus === 'true')
+    pinAction = (req.query.pinAction === 'true')
+    prevEdits = (req.query.prevEdits === 'true')
 
-    // console.log(userId)
 
-    console.log(timestamp,location,vehicle,message,updateId)
+    // pin status is current bool value for pinned
+    // pin action is if we are editing the pin status
+    
+    // prevEdits is if the update has been edited before - 'false means no edited tag'
+
+    edited = prevEdits
+    if (!edited && updateId != 'undefined' && !pinAction) {
+        // not performing a pin status change, update id has been provided, no previous edits - means action involves editing the update for the first time
+        edited = true
+    }
+
+    pinned = pinStatus
+    if (pinAction && pinStatus) {
+        // performing a pin status change and update is already pinned, update pinned to false
+        pinned = false
+    }   else if (pinAction && !pinStatus) {
+        // performing a pin status change and update is not already pinned, update pinned to true
+        pinned = true
+    }
 
 
     replacement = {
@@ -90,7 +107,8 @@ app.get('/add-update',async(req,res)=>{
         userTimestamp: timestamp,
         vehicle: vehicle,
         location: location,
-        pinned: pinned
+        pinned: pinned,
+        edited: edited
     }
     const update = new Update(replacement)
 
@@ -98,9 +116,12 @@ app.get('/add-update',async(req,res)=>{
 
     if (updateId != 'undefined') {
         // finding existing doc by id and replacing
-        Update.findOneAndReplace({ _id: updateId }, replacement, {new:true}).then((result)=>{
+        Update.findOneAndUpdate({ _id: updateId }, replacement, {new:true}).then((result)=>{
             // all good, emit to connected sockets to update their feeds, send ok message to updatee client
-            emitNewUpdate(result,updateId)
+            pinnedChangeTxt = ''
+            if (!pinAction&&updateId) {pinnedChangeTxt = 'nope'}
+            if (pinned&&pinAction) {pinnedChangeTxt = `set pinned status to ${pinned}`}
+            emitNewUpdate(result,updateId,pinnedChangeTxt)
             res.send(result)
         }).catch((err)=>{
             res.json({"err":err})
@@ -147,6 +168,18 @@ app.get('/get-updates',async(req,res)=>{
 
 
 
+app.get('/search-updates',async(req,res)=>{
+    searchQuery = req.query.q.toString()
+
+    Update.find({ $or: [{body: {$regex: searchQuery,$options: "i"}},{location: {$regex: searchQuery,$options: "i"}},{vehicle: {$regex: searchQuery,$options: "i"}},{userTimestamp: {$regex: searchQuery,$options: "i"}}] }).sort({createdAt:1}).then((result)=>{
+        res.send(result)
+    }).catch((err)=>{
+        console.log(err)
+    })
+})
+
+
+
 app.get('/check-dc-user',async(req,res)=>{
     userId = req.query.userId
 
@@ -164,12 +197,4 @@ app.get('/check-dc-user',async(req,res)=>{
     }   else {
         res.send({"dc_id":0})
     }
-})
-
-
-app.get('/test',(req,res)=>{
-    res.setHeader("Access-Control-Allow-Origin","*")
-    res.setHeader("Access-Control-Allow-Credentials","true")
-
-    res.send("testing 123")
 })

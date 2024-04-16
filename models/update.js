@@ -18,6 +18,10 @@ const updateSchema = new Schema({
         type: Boolean,
         required: true
     },
+    edited: {
+        type: Boolean,
+        required: true
+    },
     body: {
         type: String,
         required: true
